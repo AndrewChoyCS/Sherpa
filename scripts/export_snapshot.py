@@ -53,6 +53,18 @@ def publish_ablation(source: str, destination: Path) -> bool:
     destination.write_text(json.dumps(payload, allow_nan=False))
     scope = payload.get("scope", "?") if isinstance(payload, dict) else "?"
     print(f"  ablation:  {source_path.name} -> {destination.name}  (scope: {scope})")
+
+    # Loud, because it is silently wrong rather than broken. Inside one task family
+    # there is barely any task-switching left to differentiate, so every
+    # difficulty-based sort key posts the same number and the section renders four
+    # identical bars -- which reads as "the metric does nothing" when the unscoped
+    # run separates the keys cleanly.
+    if isinstance(payload, dict) and payload.get("is_scoped"):
+        print(
+            f"  WARNING: that payload is scoped to '{payload.get('domain')}'. The ablation\n"
+            f"           collapses within a single domain and will look like a null result.\n"
+            f"           Regenerate unscoped:  python find_path.py \"<goal>\" --sweep 40 --out <dir>"
+        )
     return True
 
 
@@ -72,8 +84,9 @@ def main() -> int:
     )
     parser.add_argument(
         "--ablation",
-        default="reports/difficulty_ablation.json",
-        help="difficulty-ablation payload to publish to web/public/ablation.json",
+        default="reports/difficulty_ablation_unscoped.json",
+        help="difficulty-ablation payload to publish to web/public/ablation.json; "
+        "must be an UNSCOPED sweep or the comparison collapses (see publish_ablation)",
     )
     args = parser.parse_args()
 

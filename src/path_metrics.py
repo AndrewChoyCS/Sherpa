@@ -509,14 +509,18 @@ def paired_verdict(
     right = sweep[sweep["ordering"] == b].set_index("target")[metric]
     joined = left.to_frame("a").join(right.to_frame("b")).dropna()
 
-    out: Dict[str, float] = {
+    out: Dict[str, Optional[float]] = {
         "n_goals": float(len(joined)),
-        "mean_a": float(joined["a"].mean()) if len(joined) else float("nan"),
-        "mean_b": float(joined["b"].mean()) if len(joined) else float("nan"),
+        "mean_a": float(joined["a"].mean()) if len(joined) else None,
+        "mean_b": float(joined["b"].mean()) if len(joined) else None,
         "a_better": float((joined["a"] < joined["b"]).sum()),
         "tied": float((joined["a"] == joined["b"]).sum()),
         "b_better": float((joined["a"] > joined["b"]).sum()),
-        "p_value": float("nan"),
+        # None rather than NaN: `json.dump` writes a bare `NaN` literal that Python
+        # reads back happily and `JSON.parse` rejects outright, so a consumer silently
+        # renders nothing. Undefined here is legitimate -- Wilcoxon cannot score a
+        # comparison where all pairs tie exactly, which happens on task_switch_rate.
+        "p_value": None,
     }
     if len(joined) and (joined["a"] != joined["b"]).any():
         try:

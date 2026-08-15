@@ -77,20 +77,36 @@ r2_secret = modal.Secret.from_name("egoverse-r2")
 
 # The repo's own source is added to the image so remote code is the *same* code the local
 # CLI and dashboard run -- results cannot diverge between local and remote.
-image = (
+_base_image = (
     modal.Image.debian_slim(python_version="3.11")
     .pip_install_from_requirements("requirements.txt")
     .env({"OMP_NUM_THREADS": "1", "NUMBA_NUM_THREADS": "1"})
-    .add_local_dir("src", "/root/src")
-    .add_local_dir("scripts", "/root/scripts")
-    .add_local_file("run_pipeline.py", "/root/run_pipeline.py")
-    .add_local_file("find_path.py", "/root/find_path.py")
-    # The web surface. `server/api.py` imports DOMAIN_PRESETS from find_path and reads
-    # its defaults out of run_pipeline's signature, so both files above are load-bearing
-    # here even though nothing runs them as CLIs.
-    .add_local_dir("server", "/root/server")
-    .add_local_dir("web/dist", "/root/web/dist")
 )
+
+
+def _with_local_sources(base: modal.Image) -> modal.Image:
+    """Attach the repo's source to an image.
+
+    Modal rejects a build step that runs *after* ``add_local_*``, so every variant has to
+    branch from ``_base_image`` and add local files last. Hence this helper rather than
+    layering a second image on top of the finished one.
+    """
+    return (
+        base.add_local_dir("src", "/root/src")
+        .add_local_dir("scripts", "/root/scripts")
+        .add_local_file("run_pipeline.py", "/root/run_pipeline.py")
+        .add_local_file("find_path.py", "/root/find_path.py")
+        # The web surface. `server/api.py` imports DOMAIN_PRESETS from find_path and reads
+        # its defaults out of run_pipeline's signature, so both files above are load-bearing
+        # here even though nothing runs them as CLIs.
+        .add_local_dir("server", "/root/server")
+        .add_local_dir("web/dist", "/root/web/dist")
+    )
+
+
+# The repo's own source is added to the image so remote code is the *same* code the local
+# CLI and dashboard run -- results cannot diverge between local and remote.
+image = _with_local_sources(_base_image)
 
 app = modal.App(APP_NAME)
 
@@ -608,3 +624,151 @@ def find(
 def status():
     """Print what the volumes currently hold."""
     print(json.dumps(volume_status.remote(), indent=2))
+
+
+# --------------------------------------------------------------------------- #
+# behaviour-cloning ordering experiment
+# --------------------------------------------------------------------------- #
+# Torch is only needed by this experiment, so it branches from the base rather than
+# going into requirements.txt -- every other remote function would otherwise pay a
+# ~2 GB image build for a dependency it never imports. CPU wheels: the model is ~500k
+# parameters, so the GPU is idle anyway and the CUDA wheels trebled the image size for
+# no measurable speedup.
+train_image = _with_local_sources(
+    _base_image.pip_install(
+        "torch>=2.2.0",
+        "scipy>=1.10.0",
+        index_url="https://download.pytorch.org/whl/cpu",
+    )
+)
+
+
+@app.function(
+    image=train_image,
+    # No GPU, deliberately. The policy is ~500k parameters on 3-D inputs; a benchmark
+    # arm trains in 1.4 s on a laptop CPU core. A GPU would sit idle behind Python and
+    # dataloading overhead while adding a multi-GB CUDA image build and a longer cold
+    # start, making the whole grid slower end to end. Parallelism across arms is the
+    # lever that matters here, not per-arm FLOPs. Add `gpu="A10G"` and drop the CPU
+    # index_url above if the model ever grows enough to need it.
+    cpu=4,
+    volumes={DATA_ROOT: data_volume, CACHE_ROOT: cache_volume},
+    timeout=3600,
+    max_containers=20,
+)
+def train_arm_remote(
+    ordering: str,
+    seed: int,
+    config: Dict[str, object],
+    episodes_dir: Optional[str] = None,
+) -> Dict[str, object]:
+    """Train one (ordering, seed) arm and return its validation curve.
+
+    One container per arm so the whole grid runs in parallel: the model is small enough
+    that wall-clock is dominated by container start, not by training.
+    """
+    sys.path.insert(0, "/root")
+    from src.bc_experiment import TrainConfig, run_arm
+    from src.curriculum import build_curriculum
+    from src.pipeline import run_pipeline
+
+    source = episodes_dir or EPISODES_DIR
+    result = run_pipeline(data_dir=source, cache_dir=WEB_CACHE_DIR, verbose=False)
+    if result.n_episodes < 10:
+        return {"error": f"only {result.n_episodes} episodes in {source}"}
+
+    # Rank by the curriculum the rest of the pipeline produces, so this tests *that*
+    # ordering rather than a fresh one invented for the experiment.
+    ranks_by_id = dict(
+        zip(result.curriculum["episode_id"], result.curriculum["curriculum_rank"])
+    )
+    ranks = [float(ranks_by_id.get(e, 1e9)) for e in result.dataset.episode_ids]
+
+    arm = run_arm(
+        result.dataset.trajectories,
+        ordering=ordering,
+        seed=seed,
+        curriculum_rank=ranks,
+        config=TrainConfig(**config),
+    )
+    return arm.as_dict()
+
+
+@app.local_entrypoint()
+def train_ordering_ablation(
+    seeds: int = 5,
+    epochs: int = 3,
+    orderings: str = "curriculum,anti_curriculum,shuffled",
+    out: str = "reports",
+    episodes_dir: str = "",
+):
+    """Does training on the curriculum order beat a shuffle? Fan out the grid and test.
+
+    Every proxy metric elsewhere scores the *ordering*; this scores what a model does
+    with it. Arms differ only in the order episodes are presented -- same data, same
+    architecture, same seeds, no reshuffling.
+
+    Example:
+        modal run modal_app.py::train_ordering_ablation --seeds 5 --epochs 3
+    """
+    from src.bc_experiment import ArmResult, TrainConfig, summarise, verdict
+
+    arms = [o.strip() for o in orderings.split(",") if o.strip()]
+    config = TrainConfig(epochs=epochs).as_dict()
+    config.pop("seed", None)
+
+    grid = [(ordering, seed) for ordering in arms for seed in range(seeds)]
+    print(f"Launching {len(grid)} runs ({len(arms)} orderings x {seeds} seeds) on Modal...")
+
+    started = time.time()
+    payloads = list(
+        train_arm_remote.starmap(
+            [(o, s, {**config, "seed": s}, episodes_dir or None) for o, s in grid]
+        )
+    )
+    elapsed = time.time() - started
+
+    failures = [p for p in payloads if "error" in p]
+    results = [ArmResult(**p) for p in payloads if "error" not in p]
+    if not results:
+        print("All runs failed:", failures[:3])
+        return
+
+    summary = summarise(results)
+    print(f"\n{len(results)}/{len(grid)} runs finished in {elapsed:.0f}s wall clock")
+    print("\n" + "=" * 78)
+    print("Behaviour-cloning ordering experiment")
+    print("=" * 78)
+    print(f"  {'ordering':<18}{'first-pass AUC':>17}{'final val loss':>17}{'forgetting':>13}")
+    for ordering, stats in summary["orderings"].items():
+        print(
+            f"  {ordering:<18}{stats['first_pass_auc_mean']:>13.6f} "
+            f"±{stats['first_pass_auc_std']:<3.4f}{stats['final_val_loss_mean']:>17.6f}"
+            f"{stats['forgetting_mean']:>13.6f}"
+        )
+
+    print("\nPaired against shuffled (same seed, same init):")
+    for ordering, metrics in summary["paired_vs_shuffled"].items():
+        for metric, entry in metrics.items():
+            p_value = entry.get("p_value")
+            p_text = "n/a" if p_value is None else f"{p_value:.3f}"
+            print(
+                f"  {ordering:<18}{metric:<18}{entry['pct_change']:+7.2f}%  "
+                f"W/L {entry['wins']}/{entry['losses']}  p={p_text}"
+            )
+
+    print(f"\nVERDICT: {verdict(summary)}")
+
+    target = Path(out)
+    target.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "config": config,
+        "n_runs": len(results),
+        "wall_clock_seconds": elapsed,
+        "summary": summary,
+        "verdict": verdict(summary),
+        "runs": [r.as_dict() for r in results],
+    }
+    path = target / "training_curves.json"
+    path.write_text(json.dumps(payload, indent=2, allow_nan=False))
+    print(f"\nWritten to {path}")

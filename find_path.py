@@ -374,7 +374,7 @@ def main() -> int:
         for metric, verdict in sweep_summary["path_vs_difficulty_sorted"].items():
             wtl = f"{int(verdict['a_better'])}/{int(verdict['tied'])}/{int(verdict['b_better'])}"
             p_value = verdict["p_value"]
-            p_text = "  tied" if p_value != p_value else f"{p_value:.3f}"
+            p_text = "  tied" if p_value is None else f"{p_value:.3f}"
             print(
                 f"  {metric:<34}{verdict['mean_a']:>9.3f}{verdict['mean_b']:>9.3f}"
                 f"{wtl:>12}{p_text:>8}"

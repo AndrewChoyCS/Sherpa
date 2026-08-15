@@ -19,6 +19,7 @@ import { RouteGraph } from '../viz/RouteGraph'
 import { WorkedExamples, WORKED_EXAMPLES } from '../viz/WorkedExamples'
 import { rankingVerdict, SubsetCompare } from '../viz/SubsetCompare'
 import { DifficultyAblation } from '../viz/DifficultyAblation'
+import { HowThePathIsFound } from '../viz/HowThePathIsFound'
 import type { AblationPayload } from '../viz/DifficultyAblation'
 import { loadAblation } from '../lib/ablation'
 import type { WorkedExample } from '../viz/WorkedExamples'
@@ -214,7 +215,7 @@ export function Sherpa({ snapshot, onOpenWorkbench }: SherpaProps) {
         <div className="hero__scrim" aria-hidden="true" />
 
         <div className="shell hero__inner">
-          <p className="label hero__eyebrow">Curriculum routing for robot training data</p>
+          <p className="label hero__eyebrow">Curriculum routing for robot egocentric training data</p>
           <h1 className="hero-name">Sherpa</h1>
           <p className="lead hero__lead">Type a training goal. Watch the optimal path light up.</p>
 
@@ -439,6 +440,23 @@ export function Sherpa({ snapshot, onOpenWorkbench }: SherpaProps) {
               )}
             </>
           )}
+        </div>
+      </section>
+
+      {/* ================= the maths ================= */}
+      <section className="band" aria-labelledby="maths-title">
+        <div className="shell stack">
+          <p className="label">No black box</p>
+          <h2 className="display" id="maths-title">
+            How the route is actually computed.
+          </h2>
+          <p className="prose">
+            Four stages, in the order they run. Nothing here is learned or tuned on the
+            answer — the distance is a standard alignment, the difficulty is a weighted sum
+            of measured kinematics, and the route is the cheapest path under a cost function
+            written down in advance.
+          </p>
+          <HowThePathIsFound path={path} graph={graph} />
         </div>
       </section>
 
