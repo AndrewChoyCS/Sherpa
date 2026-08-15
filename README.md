@@ -1,31 +1,67 @@
-# EgoVerse Curriculum Path Finder & Diversity Engine
+# Sherpa — EgoVerse Curriculum Path Finder & Diversity Engine
 
-Two submissions over one substrate.
+### ▶ [Try the live demo](https://andrewchoy--egoverse-curriculum-web.modal.run)
 
-**Track 1 — the Curation Engine.** Type a training goal in plain English. The app finds
-and highlights an ordered path through a knowledge graph of clips: a curriculum that ramps
-difficulty smoothly and avoids the abrupt task/skill switches that cause catastrophic
-interference during training. Dumping all data in at once, or ordering it randomly, is
-inefficient and can actively hurt the model; this picks *and sequences* a subset instead.
+Running the real pipeline on 273 real EgoVerse episodes — type a training goal and watch
+the curriculum resolve. Nothing is pre-baked; every route is searched on request. Cold
+start is ~95 s, then ~0.5 s warm; the page first-paints from a bundled snapshot so it is
+readable before the API answers.
 
-**Track 2 — non-text quantitative diversity scoring.** Measures how much genuinely
-distinct manipulation behaviour a dataset contains, by comparing end-effector trajectories
-under Dynamic Time Warping, then sequences the episodes into a difficulty-ordered
-curriculum.
+---
 
-They share every expensive computation, which is the reason they live together: the **DTW
-distance matrix is the interference signal** on the graph's edges, and the **kinematic
-difficulty score is the ramp signal**. Track 1 adds milliseconds on top of Track 2, and
-re-derives nothing.
+## Overview
 
-On 273 real episodes across four sources, the unsupervised clustering recovers the
-human-authored `task_name` groupings with an **Adjusted Rand Index of 0.653** over the 195
-episodes that carry a label — evidence the distance metric tracks behaviour rather than
-noise. (78 episodes, all of `mecka`, carry no `task_name` at all and are excluded rather
-than scored against a placeholder; see *Known limitations*.)
+**The question this answers: given thousands of egocentric clips, which ones should you
+train on, and in what order?**
 
-**Live:** <https://andrewchoy--egoverse-curriculum-web.modal.run> — Sherpa, running the
-real pipeline on the real episodes. See *Deploying* for how it is hosted.
+Sherpa scores how much genuinely distinct manipulation behaviour a dataset contains — no
+text, no LLM judge, no task labels — and then uses that score to pick and sequence a
+training curriculum for any goal you type.
+
+It works in four steps, each of which is shown on the live demo with its actual formula:
+
+1. **Compare motions.** Every clip is reduced to its end-effector path and compared to
+   every other under dynamic time warping, giving a distance in metres. Pose only: ~5 KB
+   an episode against ~50 MB with the camera stream.
+2. **Score difficulty.** Six kinematic features per clip — dominated by the dimensionless
+   ones (log tortuosity, normalised jerk, reversal rate) so "difficulty" cannot collapse
+   into "which rig recorded this" — combined into a rank in [0, 1].
+3. **Build a graph.** Clips are nodes; an edge means "train B straight after A", weighted
+   by `ramp + interference + redundancy + step`.
+4. **Route it.** Dijkstra finds the cheapest path from the easiest clips to the goal, then
+   inserts rehearsal steps that revisit earlier material.
+
+**Why the two halves live together:** the DTW matrix *is* the interference signal on the
+graph's edges, and the difficulty score *is* the ramp signal. The routing adds milliseconds
+on top of the measurement and re-derives nothing.
+
+### What holds up
+
+| Claim | Evidence |
+|---|---|
+| The distance metric tracks behaviour, not noise | Clustering on motion alone recovers human `task_name` labels at **ARI 0.653** over the 195 labelled clips. Chance is 0. |
+| The score *ranks* subsets, not just describes them | A coreset selection scores **1.9749** against random's 1.8779 and an adversarial near-duplicate control's 1.3330 — at the **100th percentile of 200 random draws, z = 3.75**. |
+| The difficulty metric beats naive proxies | Sorting by the composite beats duration, path length and tortuosity alone on task switching (0.226 vs 0.248 / 0.283 / 0.420), scored on quantities that never see the difficulty definition. |
+| The route beats sorting *within a domain* | 0.098 consecutive near-duplicates against 0.162 across a 40-goal sweep — 11 wins, 0 losses, p = 0.003. |
+
+### What does not
+
+Stated here rather than left for a reader to find:
+
+- **Unscoped, the search ties with a plain difficulty sort** on every proxy metric
+  (p = 0.65 on redundancy). It earns its keep inside a task family; across the whole graph
+  what it adds is rehearsal, which sorting has no concept of.
+- **Rehearsal is an unvalidated proxy** for preventing catastrophic forgetting. It
+  reproduces the structure of experience replay, but the training run below varies episode
+  *order* rather than rehearsal, so whether the review insertions themselves help is still
+  untested.
+- **We did train a policy** — see *But does training on it actually help?*. The short
+  version: curriculum ordering is **not** a speed-up (it loses to shuffling on every seed
+  early), but it finishes 26% below the same episodes in reverse order, which is the
+  evidence the difficulty ranking is real.
+- **Ordering by difficulty costs repetition.** The composite is the *worst* of the five
+  sort keys on consecutive near-duplicates, because grouping by difficulty groups similar
+  clips. That is precisely why the edge cost carries a separate redundancy term.
 
 ---
 
@@ -90,6 +126,63 @@ honestly:
   `--w-interference` to trade smoothness for breadth; the dashboard's Validation tab
   recomputes the whole table live.
 
+Also worth stating plainly: the path's `0.400 vs 0.750` redundancy figures above are from
+**one goal**. Across a 40-goal sweep in the same garments scope the gap is `0.098 vs
+0.162` — still a win, 11 goals to 0 with 29 ties, p = 0.003. Unscoped it disappears
+entirely (`0.592 vs 0.600`, p = 0.65). Regenerate either with
+`python find_path.py "<goal>" [--domain garments] --sweep 40`.
+
+---
+
+## But does training on it actually help?
+
+Everything above scores an *ordering*. None of it shows a model learning anything, so we
+ran the experiment those proxies stand in for: the same behaviour-cloning policy trained
+three times on identical data, changing only the order episodes arrive in. 8 seeds per
+arm, paired by seed, no reshuffling. 24 runs on Modal in 674 s.
+
+```bash
+modal run modal_app.py::train_ordering_ablation --seeds 8 --epochs 3
+```
+
+| arm (8 seeds) | first-pass AUC ↓ | final val loss ↓ | forgetting ↓ |
+|---|---|---|---|
+| curriculum (easy → hard) | 0.000250 | **0.000223** | −0.000208 |
+| reversed (hard → easy) | 0.000251 | 0.000281 | **+0.000334** |
+| shuffled (standard practice) | **0.000236** | 0.000228 | −0.000017 |
+
+Paired against shuffled, same seed and initialisation:
+
+| comparison | Δ | won/lost | p |
+|---|---|---|---|
+| curriculum, first pass | **+5.95% worse** | 0/8 | 0.008 |
+| curriculum, final loss | **−2.23% better** | 6/8 | 0.039 |
+| reversed, first pass | +6.40% worse | 0/8 | 0.008 |
+| reversed, final loss | +23.39% worse | 0/8 | 0.008 |
+
+**Curriculum ordering is not a speed-up, and we are not going to claim it is.** It lost to
+shuffling on every seed during the first pass.
+
+The reason matters. Curriculum and reversed have *near-identical* first-pass curves
+(0.000250 vs 0.000251), which places that early penalty on **ordering data at all** rather
+than on this ordering: sequential batches are correlated, and shuffling exists to break
+exactly that. Any ordering pays it.
+
+The curriculum-specific effect shows up at the end:
+
+- **−2.23% final loss vs shuffled** (6/8 seeds, p = 0.039)
+- **26% lower final loss than the same episodes reversed**
+- **no forgetting**, where the reversed ordering drifts measurably on its early material
+
+Running the ranking backwards costs 26% and induces forgetting. That is the evidence the
+difficulty ranking carries real signal — and it is a stronger result than a speed-up
+would have been, because it isolates the ranking rather than the act of ordering.
+
+**Caveats, stated rather than buried.** The task is next-displacement prediction from a
+window of end-effector poses — real training on real episodes, but not a robot success
+rate. Three epochs. Absolute losses are small, so the percentages sit on small numbers.
+Curves and per-seed statistics: `reports/training_curves.json`.
+
 ---
 
 ## Quickstart
@@ -140,6 +233,15 @@ timeouts; the same fetch on Modal took **211 seconds**.
 | **Ordered curriculum** | `path.csv` — one row per training step, with the per-transition cost split into its ramp / interference / redundancy terms, and rehearsal steps flagged. |
 | **Goal match** | The task family the free-text goal resolved to, its score, its lead over the runner-up, and the ranked alternates. |
 | **Proxy metrics** | Monotonicity, interference, coverage and redundancy, each against four same-size baselines. |
+| **Multi-goal sweep** | `--sweep N` → `ordering_sweep.csv`, `difficulty_ablation.csv` and a paired Wilcoxon test, so a claim rests on a distribution rather than one goal. Every artifact is stamped with the clip scope it was measured over. |
+
+**Training experiment — `modal_app.py::train_ordering_ablation`**
+
+| Output | Meaning |
+|---|---|
+| **Validation curves** | `training_curves.json` — 24 runs (3 orderings × 8 seeds), dense during the first pass where ordering has any effect. |
+| **Paired statistics** | Each ordering against shuffled at the same seed and initialisation, with win/loss counts and a Wilcoxon p-value. |
+| **Forgetting** | Loss on the earliest-seen episodes versus held-out data, so a curriculum that works only by overwriting early material is visible as such. |
 | **Interactive graph** | `path_graph.html` — the clip graph with the ordered path lit up on it. |
 
 **Track 2 — `run_pipeline.py` / the diversity tabs**

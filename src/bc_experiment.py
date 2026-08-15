@@ -412,3 +412,46 @@ def write_report(results: Sequence[ArmResult], config: TrainConfig, path: str) -
         # file that Python reads happily and `JSON.parse` rejects in the browser.
         json.dump(payload, handle, indent=2, allow_nan=False)
     return payload
+
+
+def curve_payload(results: Sequence[ArmResult], summary: Optional[Dict] = None) -> Dict:
+    """Plot-ready aggregate of the raw runs: mean and spread per ordering.
+
+    The frontend should not be averaging 24 raw curves itself -- that puts the
+    statistics in two places and invites them to drift. This emits the band directly.
+
+    Runs are aligned on the shortest step grid rather than assumed identical, so an arm
+    that stopped early truncates the band instead of silently misaligning it.
+    """
+    by_ordering: Dict[str, List[ArmResult]] = {}
+    for item in results:
+        by_ordering.setdefault(item.ordering, []).append(item)
+
+    series = []
+    for ordering, arms in by_ordering.items():
+        usable = [a for a in arms if a.val_loss]
+        if not usable:
+            continue
+        length = min(len(a.val_loss) for a in usable)
+        losses = np.array([a.val_loss[:length] for a in usable], dtype=float)
+        series.append(
+            {
+                "ordering": ordering,
+                "n_seeds": len(usable),
+                "steps": [int(s) for s in usable[0].steps[:length]],
+                "mean": [float(v) for v in losses.mean(axis=0)],
+                "lo": [float(v) for v in losses.min(axis=0)],
+                "hi": [float(v) for v in losses.max(axis=0)],
+                "final_val_loss": float(np.mean([a.final_val_loss for a in usable])),
+                "first_pass_auc": float(np.mean([a.first_pass_auc for a in usable])),
+                "forgetting": float(np.mean([a.forgetting for a in usable])),
+            }
+        )
+
+    summary = summary or summarise(results)
+    return {
+        "series": series,
+        "summary": summary,
+        "verdict": verdict(summary),
+        "n_runs": len(results),
+    }
