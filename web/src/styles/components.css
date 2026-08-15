@@ -1,0 +1,561 @@
+/* ==========================================================================
+   Components. Loaded after base.css. Single-class selectors throughout, so
+   nothing competes with .band for spacing.
+   ========================================================================== */
+
+/* ---- top bar ------------------------------------------------------------ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem var(--pad);
+  background: color-mix(in srgb, var(--void) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: var(--hair) solid var(--edge-soft);
+}
+.topbar__mark {
+  font-family: var(--face-display);
+  font-weight: 300;
+  font-size: 1.0625rem;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.topbar__nav { display: flex; gap: 0.25rem; margin-right: auto; }
+.topbar__meta { margin: 0; margin-left: auto; }
+
+.tab {
+  font-family: var(--face-mono);
+  font-size: var(--size-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--haze);
+  background: transparent;
+  border: 0;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  border-radius: var(--round);
+  transition: color var(--dur) var(--ease-out);
+}
+.tab:hover { color: var(--ice); }
+.tab[aria-current='true'] { color: var(--ice); background: var(--ice-16); }
+
+.boot { min-height: 70vh; display: grid; place-items: center; padding: var(--pad); }
+
+/* ---- hero ---------------------------------------------------------------
+   Full viewport. The terrain sits behind the type, dimmed and masked so the
+   headline never has to fight it. */
+.hero {
+  position: relative;
+  /* Capped rather than a bare 100svh: on a tall display a full-viewport hero
+     holding a name, one line and an input is mostly empty space, and it pushes
+     the first real content below anything the reader can reach. */
+  min-height: min(100svh, 54rem);
+  display: flex;
+  align-items: center;
+  padding-block: clamp(4rem, 12vh, 9rem);
+  overflow: hidden;
+}
+.hero__terrain {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  pointer-events: none;
+  /* Feathered at top and bottom only, so the field runs off both edges of the
+     viewport rather than sitting in a box. */
+  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+/* A directional scrim rather than a mask over the middle: the headline needs a
+   dark, even field on the left, and the terrain is worth seeing on the right.
+   Masking radially killed both — it dimmed the texture and left the type sitting
+   on the brightest part of it. */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    92deg,
+    var(--void) 0%,
+    color-mix(in srgb, var(--void) 92%, transparent) 30%,
+    color-mix(in srgb, var(--void) 55%, transparent) 55%,
+    transparent 88%
+  );
+}
+
+.hero__inner { position: relative; z-index: 1; }
+.hero__eyebrow { margin-bottom: 1.5rem; }
+.hero__lead { margin-top: 1.25rem; }
+
+.hero-name {
+  /* The one place the aurora touches type. Kept to the name alone; if every
+     heading had it, the gradient would stop meaning anything. */
+  background: linear-gradient(104deg, var(--ice) 22%, var(--plume) 58%, var(--summit) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 3rem;
+  margin: 3rem 0 0;
+  padding-top: 1.5rem;
+  border-top: var(--hair) solid var(--edge);
+}
+.hero__stats div { display: grid; gap: 0.3rem; }
+.hero__stats dd { margin: 0; }
+
+/* ---- ask ---------------------------------------------------------------- */
+.ask {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2.25rem;
+  max-width: 46rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.1rem;
+  background: color-mix(in srgb, var(--basalt) 70%, transparent);
+  border: var(--hair) solid var(--edge);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.ask:focus-within {
+  border-color: color-mix(in srgb, var(--summit) 60%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--summit) 25%, transparent),
+    0 0 40px -12px var(--glow-summit);
+}
+.ask__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ice);
+  font-family: var(--face-mono);
+  font-size: clamp(0.9375rem, 1.4vw, 1.0625rem);
+  padding: 0.5rem 0;
+}
+.ask__input::placeholder { color: color-mix(in srgb, var(--haze) 70%, transparent); }
+.ask__input:focus { outline: none; }
+.ask__go { border-radius: 999px; flex: none; }
+
+.terrain { width: 100%; }
+
+/* ---- ascent (signature) ------------------------------------------------- */
+.ascent { margin: 0; display: grid; gap: 0.75rem; }
+.ascent svg { width: 100%; height: auto; display: block; overflow: visible; }
+.ascent--compact svg { max-height: 150px; }
+
+.ascent__grid line { stroke: var(--edge-soft); stroke-width: 1; }
+.ascent__grid text { fill: var(--haze); font-family: var(--face-mono); font-size: 11px; }
+.ascent__base { stroke: var(--edge); stroke-width: 1; }
+/* Resting state is fully drawn; the keyframes only play it IN. Written this way
+   deliberately — a reveal that starts hidden and depends on an animation running
+   leaves an empty chart wherever animation does not run. */
+.ascent__ridge {
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+  animation: ridge-draw 1200ms var(--ease-out);
+}
+@keyframes ridge-draw { from { stroke-dashoffset: 100; } }
+
+.ascent__face { animation: face-in 1400ms var(--ease-out); }
+@keyframes face-in { from { opacity: 0; } }
+
+.ascent__stage { animation: stage-in 420ms var(--ease-out) backwards; animation-delay: var(--stage-delay, 0ms); }
+@keyframes stage-in { from { opacity: 0; } }
+.ascent__drop { stroke: var(--edge-soft); stroke-width: 1; }
+
+.ascent__node { fill: var(--aurora); stroke: var(--void); stroke-width: 2; }
+.ascent__stage[data-summit='true'] .ascent__node { fill: var(--summit); }
+.ascent__camp { fill: var(--void); stroke: var(--summit); stroke-width: 2; }
+.ascent__halo { fill: none; stroke: var(--summit); stroke-width: 1; opacity: 0.35; }
+.ascent__hit { fill: transparent; cursor: pointer; }
+.ascent__stage:hover .ascent__node { fill: var(--summit); }
+.ascent__stage:hover .ascent__drop { stroke: var(--summit); }
+
+.ascent__summit-label text {
+  fill: var(--summit);
+  font-family: var(--face-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.ascent__summit-label .ascent__summit-d { font-size: 15px; letter-spacing: 0; text-transform: none; }
+
+.ascent__caption {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: center;
+  font-family: var(--face-mono); font-size: var(--size-label); color: var(--haze);
+}
+.ascent__key { display: inline-flex; align-items: center; gap: 0.45rem; }
+.ascent__key-camp { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--summit); display: block; }
+.ascent__key-summit { width: 9px; height: 9px; border-radius: 50%; background: var(--summit); display: block; }
+
+/* ---- readouts ----------------------------------------------------------- */
+.readouts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1.25rem 2rem;
+  padding: 1.5rem 0;
+  border-block: var(--hair) solid var(--edge);
+}
+.readouts__cell { display: grid; gap: 0.4rem; align-content: start; }
+.readouts__cell[data-wide='true'] { grid-column: span 2; }
+.readouts__cell[data-wide='true'] .readout { font-size: clamp(1.125rem, 1.8vw, 1.5rem); }
+
+.two-up {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: 1.5rem 3rem;
+}
+
+.notice {
+  font-family: var(--face-mono);
+  font-size: var(--size-data);
+  color: var(--ice);
+  border-left: 2px solid var(--summit);
+  background: color-mix(in srgb, var(--summit) 8%, transparent);
+  padding: 0.75rem 1rem;
+  margin: 0;
+  max-width: var(--measure);
+  border-radius: 0 var(--round) var(--round) 0;
+}
+
+/* ---- notes -------------------------------------------------------------- */
+.notes { display: grid; gap: 1.75rem 3rem; margin: 0; }
+@media (min-width: 60rem) { .notes { grid-template-columns: 1fr 1fr; } }
+.notes dt {
+  font-family: var(--face-display);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--ice);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+.notes dd { margin: 0; color: var(--ice-70); font-size: 0.9375rem; line-height: 1.6; max-width: 44ch; }
+
+/* ---- worked examples ---------------------------------------------------- */
+.examples {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  gap: 1.25rem;
+}
+.examples__card {
+  position: relative;
+  background: var(--lift);
+  border: var(--hair) solid var(--edge);
+  border-radius: var(--round);
+  padding: clamp(1.125rem, 2vw, 1.6rem);
+  display: grid; gap: 0.9rem; align-content: start;
+  transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.examples__card:hover { border-color: var(--ice-45); }
+.examples__card[data-active='true'] {
+  border-color: color-mix(in srgb, var(--summit) 55%, transparent);
+  box-shadow: 0 0 60px -22px var(--glow-summit);
+}
+.examples__goal {
+  font-family: var(--face-display);
+  font-size: clamp(1.25rem, 2vw, 1.625rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--ice);
+  margin: 0;
+}
+.examples__point { font-size: 0.9375rem; max-width: none; }
+.examples__tasks {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.3rem;
+  font-family: var(--face-mono); font-size: var(--size-label); color: var(--haze);
+}
+.examples__tasks li { border: var(--hair) solid var(--edge); border-radius: 999px; padding: 0.15rem 0.55rem; }
+.examples__actions { display: flex; gap: 0.5rem; }
+.examples__summary { font-size: var(--size-label); color: var(--haze); margin: 0; }
+.examples__cli {
+  font-family: var(--face-mono); font-size: var(--size-label);
+  color: color-mix(in srgb, var(--haze) 80%, transparent);
+  border-top: var(--hair) solid var(--edge-soft);
+  padding-top: 0.7rem;
+  overflow-wrap: anywhere;
+}
+
+/* ---- three-clip preview ------------------------------------------------- */
+.preview {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem; align-items: start;
+}
+.preview__cell { display: grid; gap: 0.3rem; position: relative; }
+.preview__cell:not(:last-child)::after {
+  content: '';
+  position: absolute; right: -0.35rem; top: 42%;
+  width: 5px; height: 5px;
+  border-top: 1px solid var(--haze);
+  border-right: 1px solid var(--haze);
+  transform: rotate(45deg);
+}
+.preview__label { color: var(--haze); }
+.preview__cell:last-child .preview__label { color: var(--summit); }
+.preview__plot {
+  width: 100%; display: block; border-radius: var(--round);
+  background: color-mix(in srgb, var(--void) 50%, transparent);
+}
+.preview__d { line-height: 1.1; }
+.preview__meta { font-family: var(--face-mono); font-size: var(--size-label); color: var(--haze); margin: 0; }
+
+.preview__video {
+  position: relative; display: block; width: 100%; padding: 0;
+  border: var(--hair) solid var(--edge);
+  border-radius: var(--round);
+  background: #000; cursor: pointer; overflow: hidden; line-height: 0;
+}
+.preview__cell:last-child .preview__video { border-color: color-mix(in srgb, var(--summit) 55%, transparent); }
+.preview__video video { width: 100%; height: auto; display: block; aspect-ratio: 4 / 3; object-fit: cover; }
+.preview__playmark {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 1.4rem; color: var(--ice);
+  background: color-mix(in srgb, var(--void) 55%, transparent);
+  line-height: 1;
+}
+
+/* ---- route graph -------------------------------------------------------- */
+.graph-frame {
+  border: var(--hair) solid var(--edge);
+  border-radius: var(--round);
+  background: color-mix(in srgb, var(--void) 40%, transparent);
+  overflow: hidden;
+}
+.routegraph { width: 100%; display: block; }
+.routegraph__edges line { stroke: var(--ice); stroke-width: 0.12; opacity: 0.16; }
+.routegraph__route {
+  fill: none; stroke: var(--summit); stroke-width: 0.75;
+  stroke-linejoin: round; stroke-linecap: round;
+  animation: draw-route 1000ms var(--ease-out) both;
+}
+@keyframes draw-route {
+  from { stroke-dasharray: 100; stroke-dashoffset: 100; }
+  to { stroke-dasharray: 100; stroke-dashoffset: 0; }
+}
+.routegraph__nodes circle { cursor: pointer; }
+.routegraph__reviews circle { fill: none; stroke: var(--summit); stroke-width: 0.3; }
+.routegraph__stops text { font-family: var(--face-mono); font-size: 2.6px; fill: var(--ice); font-weight: 500; }
+.routegraph__target rect { fill: none; stroke: var(--summit); stroke-width: 0.4; }
+
+/* ---- filmstrip ---------------------------------------------------------- */
+.strip {
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  grid-template-areas: 'stage meta' 'reel reel';
+  gap: 1.5rem;
+  align-items: start;
+}
+.strip__stage { grid-area: stage; display: grid; gap: 0.6rem; }
+.strip__meta { grid-area: meta; }
+.strip__reel { grid-area: reel; }
+
+.clipplot { width: 100%; display: block; background: color-mix(in srgb, var(--void) 45%, transparent); }
+.clipplot--large { border: var(--hair) solid var(--edge); border-radius: var(--round); }
+.clipplot__reg line { stroke: var(--edge); stroke-width: 0.4; }
+
+.strip__scalebar { display: flex; align-items: center; gap: 0.5rem; }
+.strip__scalebar-line { height: 2px; background: var(--haze); display: block; min-width: 4px; }
+.strip__id { color: var(--haze); word-break: break-all; }
+.strip__spec {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1rem; margin: 0;
+  font-family: var(--face-mono); font-size: var(--size-data);
+}
+.strip__spec dt { color: var(--haze); }
+.strip__spec dd { margin: 0; color: var(--ice); font-variant-numeric: tabular-nums; }
+.strip__transport { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.strip__reel {
+  list-style: none; margin: 0; padding: 0.5rem 0 0;
+  display: flex; gap: 0.5rem; overflow-x: auto;
+  border-top: var(--hair) solid var(--edge);
+}
+.strip__cell {
+  width: 6.5rem; display: grid; gap: 0.15rem; padding: 0.35rem;
+  background: transparent;
+  border: var(--hair) solid var(--edge);
+  border-radius: var(--round);
+  cursor: pointer;
+  font-family: var(--face-mono); font-size: var(--size-label); color: var(--haze);
+  transition: border-color var(--dur) var(--ease-out);
+}
+.strip__cell:hover { border-color: var(--ice-45); color: var(--ice); }
+.strip__cell[aria-current='true'] { border-color: var(--summit); color: var(--ice); }
+.strip__cell[data-review='true'] { border-style: dashed; }
+.strip__cellnum { display: flex; justify-content: space-between; align-items: center; }
+.strip__rev { color: var(--summit); }
+.strip__celld { text-align: right; font-variant-numeric: tabular-nums; }
+.strip__missing { display: grid; place-items: center; aspect-ratio: 1; }
+
+/* ---- disclosure --------------------------------------------------------- */
+.disclose { border-top: var(--hair) solid var(--edge-soft); padding-top: 0.75rem; }
+.disclose > summary {
+  font-family: var(--face-mono); font-size: var(--size-label);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--haze); cursor: pointer;
+}
+.disclose > summary:hover { color: var(--ice); }
+.disclose[open] > summary { color: var(--ice); margin-bottom: 0.9rem; }
+.ledger td.reason { color: var(--haze); white-space: normal; font-size: 0.75rem; }
+
+/* ==========================================================================
+   Subset comparison — component authored in the other session (SubsetCompare.tsx).
+   Its markup is not mine to change, so the palette is remapped here instead:
+   the old --ink / --ink-45 / --rule tokens no longer exist on a dark ground.
+   ========================================================================== */
+.cmp { display: grid; gap: 1.25rem; }
+
+.cmp__legend {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: var(--hair) solid var(--edge);
+}
+.cmp__key { display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.8125rem; }
+.cmp__key i { width: 10px; height: 10px; border-radius: 2px; align-self: center; }
+.cmp__key span { color: var(--haze); }
+
+.cmp__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem 2rem;
+}
+
+.cmp-metric { display: grid; gap: 0.3rem; }
+.cmp-row { display: grid; grid-template-columns: 5.5rem 1fr 4.5rem; align-items: center; gap: 0.5rem; }
+.cmp-row__name { font-size: 0.75rem; color: var(--haze); }
+.cmp-row__track { height: 10px; background: var(--ice-16); border-radius: 2px; }
+.cmp-row__fill { display: block; height: 100%; border-radius: 2px; }
+.cmp-row__value { font-size: 0.75rem; text-align: right; font-variant-numeric: tabular-nums; color: var(--ice-70); }
+.cmp-row__value[data-best] { font-weight: 600; color: var(--summit); }
+
+.cmp__panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem 2rem;
+  align-items: end;
+}
+.cmp-null, .cmp-curve { margin: 0; display: grid; gap: 0.5rem; }
+.cmp-null svg, .cmp-curve svg { width: 100%; height: auto; }
+.cmp-null__tag { font-size: 10px; fill: var(--ice); font-weight: 600; }
+.cmp-null__tick { font-size: 9px; fill: var(--haze); }
+
+/* Aliases for class names that component still uses from the previous design.
+   Cheaper and safer than editing a file another session owns. */
+.eyebrow {
+  font-family: var(--face-mono);
+  font-size: var(--size-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--haze);
+  margin: 0;
+}
+.caption { color: var(--haze); font-size: 0.875rem; }
+
+/* ---- workbench ---------------------------------------------------------- */
+.bench {
+  display: grid;
+  grid-template-columns: 18rem minmax(0, 1fr);
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding-inline: var(--pad);
+}
+.bench__rail {
+  border-right: var(--hair) solid var(--edge);
+  padding: 3rem 1.5rem 3rem 0;
+  display: grid; gap: 1rem; align-content: start;
+  position: sticky; top: 3.5rem;
+  max-height: calc(100vh - 3.5rem); overflow-y: auto; overflow-x: hidden;
+  overflow-wrap: anywhere;
+}
+.bench__rail input, .bench__rail select, .bench__rail button { width: 100%; min-width: 0; max-width: 100%; }
+.bench__rail .field--row input[type='checkbox'] { width: auto; }
+.bench__body { min-width: 0; padding-left: 1.5rem; }
+.field--row { grid-auto-flow: column; grid-template-columns: auto 1fr; align-items: center; gap: 0.5rem; }
+
+.penkey {
+  list-style: none; margin: 0.75rem 0 0; padding: 0; display: flex; gap: 1.25rem;
+  font-family: var(--face-mono); font-size: var(--size-label); color: var(--haze);
+}
+.penkey li { display: flex; align-items: center; gap: 0.4rem; }
+.penkey__swatch { width: 8px; height: 8px; border-radius: 50%; display: block; }
+
+.umap {
+  width: 100%; max-width: 34rem; display: block;
+  border: var(--hair) solid var(--edge); border-radius: var(--round);
+  background: color-mix(in srgb, var(--void) 40%, transparent);
+}
+.umap circle { cursor: pointer; }
+
+.matrix { display: grid; gap: 0.6rem; }
+.matrix canvas { border: var(--hair) solid var(--edge); border-radius: var(--round); max-width: 100%; }
+.matrix__probe {
+  display: flex; flex-wrap: wrap; gap: 0 1.25rem;
+  font-size: var(--size-label); color: var(--haze); min-height: 1.2rem;
+}
+.matrix__value { color: var(--ice); }
+
+/* ---- footer ------------------------------------------------------------- */
+.foot { border-top: var(--hair) solid var(--edge); padding-block: 2.5rem; }
+.foot__inner { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.75rem 2rem; }
+.foot__src { margin-left: auto; }
+
+/* ---- narrow ------------------------------------------------------------- */
+@media (max-width: 60rem) {
+  .strip { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'stage' 'meta' 'reel'; }
+  .bench { grid-template-columns: minmax(0, 1fr); }
+  .bench__rail {
+    position: static; max-height: none; border-right: 0;
+    border-bottom: var(--hair) solid var(--edge);
+    padding: 1.5rem 0;
+  }
+  .bench__body { padding-left: 0; }
+  .hero { min-height: auto; padding-block: 5rem 3.5rem; }
+}
+
+/* ---- difficulty ablation ------------------------------------------------
+   Component authored in the other session; these are the five classes it needs,
+   shaped to match .cmp-row so the two comparison blocks read as one system. */
+.abl { display: grid; gap: 1rem; }
+.abl__scope {
+  font-family: var(--face-mono);
+  font-size: var(--size-label);
+  color: var(--haze);
+  margin: 0;
+}
+.abl__scope b { color: var(--ice); font-weight: 500; }
+
+.abl-row {
+  display: grid;
+  grid-template-columns: 10rem 1fr 4rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+.abl-row__name { font-family: var(--face-mono); font-size: 0.75rem; color: var(--haze); }
+/* The component puts data-best on the value span, not the row — target it there. */
+.abl-row:has(.abl-row__value[data-best]) .abl-row__name { color: var(--ice); }
+.abl-row__track { height: 10px; background: var(--ice-16); border-radius: 2px; overflow: hidden; }
+.abl-row__fill { display: block; height: 100%; border-radius: 2px; }
+.abl-row__value {
+  font-family: var(--face-mono);
+  font-size: 0.75rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--ice-70);
+}
+.abl-row__value[data-best] { color: var(--summit); font-weight: 600; }
+
+@media (max-width: 40rem) {
+  .abl-row { grid-template-columns: 7.5rem 1fr 3.25rem; gap: 0.5rem; }
+}

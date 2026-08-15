@@ -1,0 +1,85 @@
+/* ==========================================================================
+   Sherpa — design tokens
+   --------------------------------------------------------------------------
+   A sherpa knows the route, sets the pace, and calls the rest stops. That is
+   what this product does: it orders clips by difficulty (altitude), and inserts
+   rehearsal steps (acclimatisation halts) so nothing is forgotten on the way up.
+   So the whole surface is an ascent seen at altitude — deep sky, aurora, and a
+   single warm light on the summit.
+
+   Colour is keyed to EMBODIMENT, not to data source: human demonstrations in
+   plume, robot in aurora. That is the crossing the flagship example is about,
+   and it leaves the one warm hue free to mean exactly one thing — the route.
+   ========================================================================== */
+
+:root {
+  /* ---- ground (4) ------------------------------------------------------ */
+  --void: #05060a;         /* the page: sky before dawn at altitude */
+  --basalt: #0e1220;       /* raised surface — panels, inputs, cards */
+  --ice: #e8ecf6;          /* primary text, cold white */
+  --haze: #8892ab;         /* secondary text, thin air */
+
+  /* ---- aurora (2) — one atmosphere, two stops ------------------------- */
+  --aurora: #4a63e7;       /* robot embodiment */
+  --plume: #a57bd8;        /* human embodiment */
+
+  /* ---- summit (1) ------------------------------------------------------
+     The only warm value on the page. It means "the route the search chose"
+     and the goal it ends on — nothing else is ever this colour.            */
+  --summit: #f0be7c;
+
+  /* ---- derived --------------------------------------------------------- */
+  --ice-70: color-mix(in srgb, var(--ice) 70%, transparent);
+  --ice-45: color-mix(in srgb, var(--ice) 45%, transparent);
+  --ice-16: color-mix(in srgb, var(--ice) 16%, transparent);
+  --edge: color-mix(in srgb, var(--ice) 12%, transparent);   /* hairlines */
+  --edge-soft: color-mix(in srgb, var(--ice) 7%, transparent);
+  --glow-aurora: color-mix(in srgb, var(--aurora) 55%, transparent);
+  --glow-summit: color-mix(in srgb, var(--summit) 60%, transparent);
+  --lift: linear-gradient(180deg, var(--basalt), color-mix(in srgb, var(--basalt) 60%, var(--void)));
+
+  /* ---- type -----------------------------------------------------------
+     Manrope carries the display at ExtraLight: thin strokes held at very large
+     size are what make the reference feel like altitude rather than a poster.
+     Instrument Sans keeps prose readable at body size where 200 would fail.
+     Spline Sans Mono holds every numeral, id and label — this is an instrument
+     and its readouts should look measured.                                  */
+  --face-display: 'Manrope', 'Helvetica Neue', sans-serif;
+  --face-body: 'Instrument Sans', system-ui, sans-serif;
+  --face-mono: 'Spline Sans Mono', ui-monospace, monospace;
+
+  --size-hero: clamp(4rem, 15vw, 13rem);
+  --size-display: clamp(2.25rem, 5.2vw, 4rem);
+  --size-title: clamp(1.375rem, 2.4vw, 1.875rem);
+  --size-lead: clamp(1.0625rem, 1.5vw, 1.375rem);
+  --size-body: 1rem;
+  --size-data: 0.8125rem;
+  --size-label: 0.6875rem;
+
+  /* ---- rhythm ---------------------------------------------------------- */
+  --shell: 78rem;          /* content column */
+  --measure: 58ch;
+  --pad: clamp(1.25rem, 4vw, 3rem);
+  --band: clamp(4.5rem, 9vw, 8.5rem);
+  --hair: 1px;
+  --round: 3px;            /* barely there; enough to feel engineered */
+
+  /* ---- motion ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 220ms;
+}
+
+/* Compatibility aliases.
+   SubsetCompare.tsx is authored in another session and sets SVG strokes to
+   `var(--rule)` inline. Rather than edit a file that is not mine, the old token
+   name is kept pointing at the new hairline value — otherwise its axes vanish
+   against the dark ground. */
+:root {
+  --rule: var(--edge);
+  --ink: var(--ice);
+  --ink-45: var(--haze);
+}
+
+/* Embodiment → hue. Applied by data attribute so markup stays declarative. */
+[data-embodiment='human'] { --body-hue: var(--plume); }
+[data-embodiment='robot'] { --body-hue: var(--aurora); }

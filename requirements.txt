@@ -1,0 +1,32 @@
+# EgoVerse Trajectory Diversity & Curriculum Engine (Track 2)
+#
+# Pin notes (verified against the real EgoVerse dataset, not assumed):
+#   zarr>=3    -> EgoVerse `processed_v3` stores are Zarr *v3* format
+#                 (root `zarr.json`, `c/0/0` chunk layout). zarr 2.x cannot read them.
+#   tslearn>=0.9 -> 0.9.x is NumPy 2 compatible; older 0.6.x is not, and pinning
+#                 numpy<2 conflicts with zarr 3's resolved dependency set.
+numpy>=1.26.0
+zarr>=3.0.0
+tslearn>=0.9.0
+umap-learn>=0.5.3
+plotly>=5.15.0
+scikit-learn>=1.2.0
+pandas>=2.0.0
+scipy>=1.10.0
+streamlit>=1.30.0
+tqdm>=4.65.0
+
+# Track 1 clip graph: structure, spring layout, and Dijkstra/A* over the dual-weighted
+# edges. Pure Python, so it adds no build burden.
+networkx>=3.0
+
+# R2/S3 access for pulling episodes from the EgoVerse bucket.
+boto3>=1.34.0
+
+# JSON API behind the React frontend in `web/` (server/api.py). Only needed to run
+# the web UI; the CLI, the Streamlit dashboard and the pipeline itself do not import
+# these. `httpx2` is what starlette's TestClient requires, so tests/test_api.py
+# skips cleanly without it rather than erroring at collection.
+fastapi>=0.115.0
+uvicorn>=0.30.0
+httpx2>=2.10.0

@@ -1,0 +1,110 @@
+{
+  "scope": "garments",
+  "domain": "garments",
+  "n_clips": 131,
+  "task_names": [
+    "flagship_folding_clothes",
+    "fold_clothes",
+    "freeform_hang_shirt_on_hanger_and_place_on_rack",
+    "freeform_sort_laundry_by_type_and_color",
+    "yam_fold_tshirt"
+  ],
+  "is_scoped": true,
+  "n_goals": 40,
+  "metrics": [
+    "task_switch_rate",
+    "cluster_switch_rate",
+    "mean_consecutive_dtw",
+    "frac_consecutive_near_duplicate"
+  ],
+  "lower_is_better": [
+    "task_switch_rate",
+    "cluster_switch_rate",
+    "mean_consecutive_dtw",
+    "frac_consecutive_near_duplicate"
+  ],
+  "rows": [
+    {
+      "sort_key": "composite difficulty",
+      "task_switch_rate": 0.3880357142857143,
+      "cluster_switch_rate": 0.3744345238095238,
+      "mean_consecutive_dtw": 0.7034215828752015,
+      "frac_consecutive_near_duplicate": 0.16196428571428573
+    },
+    {
+      "sort_key": "duration only",
+      "task_switch_rate": 0.3880357142857143,
+      "cluster_switch_rate": 0.3744345238095238,
+      "mean_consecutive_dtw": 0.7135084036240238,
+      "frac_consecutive_near_duplicate": 0.12898809523809524
+    },
+    {
+      "sort_key": "path_length only",
+      "task_switch_rate": 0.3880357142857143,
+      "cluster_switch_rate": 0.3744345238095238,
+      "mean_consecutive_dtw": 0.7368043531892472,
+      "frac_consecutive_near_duplicate": 0.09812499999999999
+    },
+    {
+      "sort_key": "tortuosity only",
+      "task_switch_rate": 0.3880357142857143,
+      "cluster_switch_rate": 0.3744345238095238,
+      "mean_consecutive_dtw": 0.7273687294231572,
+      "frac_consecutive_near_duplicate": 0.15071428571428572
+    },
+    {
+      "sort_key": "random order",
+      "task_switch_rate": 0.5572916666666667,
+      "cluster_switch_rate": 0.5161607142857143,
+      "mean_consecutive_dtw": 0.8108373711398137,
+      "frac_consecutive_near_duplicate": 0.06449404761904762
+    }
+  ],
+  "paired_vs_difficulty_sorted": {
+    "spearman": {
+      "n_goals": 40.0,
+      "mean_a": 0.9871428571428572,
+      "mean_b": 1.0,
+      "a_better": 3.0,
+      "tied": 37.0,
+      "b_better": 0.0,
+      "p_value": 0.10247043485974941
+    },
+    "task_switch_rate": {
+      "n_goals": 40.0,
+      "mean_a": 0.3880357142857143,
+      "mean_b": 0.3880357142857143,
+      "a_better": 0.0,
+      "tied": 40.0,
+      "b_better": 0.0,
+      "p_value": NaN
+    },
+    "cluster_switch_rate": {
+      "n_goals": 40.0,
+      "mean_a": 0.3744345238095238,
+      "mean_b": 0.3744345238095238,
+      "a_better": 0.0,
+      "tied": 40.0,
+      "b_better": 0.0,
+      "p_value": NaN
+    },
+    "mean_consecutive_dtw": {
+      "n_goals": 40.0,
+      "mean_a": 0.7023469903313735,
+      "mean_b": 0.7034215828752015,
+      "a_better": 3.0,
+      "tied": 37.0,
+      "b_better": 0.0,
+      "p_value": 0.10880943004054569
+    },
+    "frac_consecutive_near_duplicate": {
+      "n_goals": 40.0,
+      "mean_a": 0.0982142857142857,
+      "mean_b": 0.16196428571428573,
+      "a_better": 11.0,
+      "tied": 29.0,
+      "b_better": 0.0,
+      "p_value": 0.0032526419863057334
+    }
+  }
+}

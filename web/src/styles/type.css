@@ -1,0 +1,100 @@
+/* ==========================================================================
+   Type — three faces, three jobs.
+
+   Manrope at 200 for display: thin strokes held at very large size are what read
+   as altitude and air. It is never used below ~1.3rem, where 200 weight would
+   turn to grey mush; prose is Instrument Sans and data is Spline Sans Mono.
+   ========================================================================== */
+
+.hero-name {
+  font-family: var(--face-display);
+  font-size: var(--size-hero);
+  font-weight: 200;
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  margin: 0;
+  color: var(--ice);
+}
+
+.display {
+  font-family: var(--face-display);
+  font-size: var(--size-display);
+  font-weight: 200;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.title {
+  font-family: var(--face-display);
+  font-size: var(--size-title);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* A label states what a thing is. It never decorates, and it never repeats the
+   heading below it in different words. */
+.label {
+  font-family: var(--face-mono);
+  font-size: var(--size-label);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--haze);
+  margin: 0;
+}
+.label--summit { color: var(--summit); }
+
+.lead {
+  font-family: var(--face-body);
+  font-size: var(--size-lead);
+  line-height: 1.45;
+  color: var(--ice-70);
+  max-width: 34ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.prose {
+  font-family: var(--face-body);
+  font-size: var(--size-body);
+  line-height: 1.6;
+  color: var(--ice-70);
+  max-width: var(--measure);
+  margin: 0;
+  text-wrap: pretty;
+}
+.prose strong { color: var(--ice); font-weight: 600; }
+.prose em { color: var(--ice); font-style: italic; }
+
+.prose code, .mono {
+  font-family: var(--face-mono);
+  font-size: 0.9em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ice);
+}
+
+/* Every number on the page is tabular, so a changing digit never shifts layout. */
+.readout {
+  font-family: var(--face-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  color: var(--ice);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.readout-xl { font-size: clamp(2rem, 4.5vw, 3.25rem); line-height: 1; font-weight: 200; }
+.readout-lg { font-size: clamp(1.5rem, 2.6vw, 2.125rem); line-height: 1; font-weight: 200; }
+.readout-md { font-size: 1.125rem; line-height: 1.2; }
+.readout-sm { font-size: var(--size-data); line-height: 1.3; }
+
+.unit {
+  font-family: var(--face-mono);
+  font-size: var(--size-label);
+  color: var(--haze);
+  letter-spacing: 0.06em;
+}

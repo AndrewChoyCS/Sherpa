@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Pipeline caches. Regenerated on demand; keyed by a content hash of the
+# trajectories, so a stale copy is worse than no copy.
+.cache/
+
+# Episode data (84 MB of Zarr stores). Fetched with
+# scripts/fetch_egoverse_data.py, and served in production from the
+# `egoverse-data` Modal volume -- see "Deploy" in the README.
+data/
+
+# Frontend
+web/node_modules/
+web/dist/
+web/tsconfig.tsbuildinfo
+
+# macOS
+.DS_Store
+
+# Editor / agent config
+.claude/

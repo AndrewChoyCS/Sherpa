@@ -1,0 +1,357 @@
+{
+  "diversity_metrics": {
+    "n_trajectories": 273.0,
+    "n_pairs": 37128.0,
+    "diversity_score": 1.9015641181742267,
+    "median_pairwise": 1.9622946024307792,
+    "std_pairwise": 0.2823893754730285,
+    "min_pairwise": 0.0,
+    "max_pairwise": 2.684585756121961,
+    "dispersion": 0.14850373583203846,
+    "tail_ratio": 1.167622902728338,
+    "mean_nn_distance": 1.1286307755109857,
+    "redundancy_ratio": 0.717948717948718,
+    "silhouette": 0.11717080811916666,
+    "cluster_balance": 0.6534548905665992
+  },
+  "cluster_label_agreement_ari": {
+    "task_name": 0.6527158469618507,
+    "source": 0.6333830327683816,
+    "embodiment": 0.2961333448498011
+  },
+  "cluster_label_agreement_support": {
+    "task_name": 195,
+    "source": 273,
+    "embodiment": 273
+  },
+  "n_clusters": 10,
+  "suggested_k": 10,
+  "silhouette_by_k": {
+    "2": 0.16689068137703408,
+    "3": 0.07119064883183905,
+    "4": 0.053037381561342356,
+    "5": 0.10068514988301094,
+    "6": 0.09361448688881177,
+    "7": 0.09078920020842858,
+    "8": 0.1151147454312212,
+    "9": 0.1124805909702116,
+    "10": 0.11717080811916666
+  },
+  "n_episodes_loaded": 273,
+  "n_episodes_skipped": 60,
+  "skipped": [
+    {
+      "episode_id": "eva__2025-11-26-21-07-35-274000",
+      "reason": "right.obs_ee_pose: 100% of frames are missing-data sentinels"
+    },
+    {
+      "episode_id": "eva__2025-11-26-21-28-41-526000",
+      "reason": "right.obs_ee_pose: 100% of frames are missing-data sentinels"
+    },
+    {
+      "episode_id": "eva__2025-11-27-02-32-03-611000",
+      "reason": "right.obs_ee_pose: 100% of frames are missing-data sentinels"
+    },
+    {
+      "episode_id": "eva__2025-11-27-02-34-43-874000",
+      "reason": "right.obs_ee_pose: 100% of frames are missing-data sentinels"
+    },
+    {
+      "episode_id": "eva__2025-11-27-02-36-10-298000",
+      "reason": "right.obs_ee_pose: 100% of frames are missing-data sentinels"
+    },
+    {
+      "episode_id": "eva__2025-11-27-02-39-49-990000",
+      "reason": "right.obs_ee_pose: 100% of frames are missing-data sentinels"
+    },
+    {
+      "episode_id": "eva__2025-11-27-02-40-54-524000",
+      "reason": "right.obs_ee_pose: 100% of frames are missing-data sentinels"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-00-59-534045",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 9.21e-06 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 9.54e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-01-09-920327",
+      "reason": "left.obs_ee_pose: 100% of frames are missing-data sentinels; right.obs_ee_pose: end-effector is static (max per-axis std 1.02e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-16-32-579211",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 9.21e-06 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 9.54e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-16-42-987257",
+      "reason": "left.obs_ee_pose: 100% of frames are missing-data sentinels; right.obs_ee_pose: end-effector is static (max per-axis std 1.02e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-22-56-839549",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 4.02e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.64e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-32-52-442579",
+      "reason": "left.obs_ee_pose: 100% of frames are missing-data sentinels; right.obs_ee_pose: end-effector is static (max per-axis std 2.09e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-33-02-655173",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 7.33e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 2.50e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-41-51-255837",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.33e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.62e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-42-13-177905",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 4.99e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 3.92e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-43-15-867129",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.87e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.85e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-43-25-787209",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 2.71e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 7.72e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-44-39-692312",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.15e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 8.73e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-44-54-297880",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.54e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.57e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-45-27-892119",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 2.97e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.28e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-45-30-430832",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.69e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.52e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-46-05-680927",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 9.94e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 7.62e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-46-30-025613",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.49e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.31e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-47-48-145602",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.19e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 8.78e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-47-48-287935",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.94e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 2.15e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-48-09-822699",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 2.44e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 2.36e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-48-54-353001",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.32e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 9.68e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-49-50-336459",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.70e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.44e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-50-13-034508",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 7.83e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 3.22e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-50-57-612439",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.67e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.41e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-52-21-556366",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.71e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.55e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-52-32-408783",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.45e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.63e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-52-56-180296",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.66e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.67e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-53-06-028355",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.41e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.71e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-53-40-471994",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 7.90e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 6.77e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-55-35-962952",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.48e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.37e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-57-02-419257",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.00e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 3.03e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-57-09-396199",
+      "reason": "left.obs_ee_pose: 100% of frames are missing-data sentinels; right.obs_ee_pose: end-effector is static (max per-axis std 1.04e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-57-21-913422",
+      "reason": "left.obs_ee_pose: 100% of frames are missing-data sentinels; right.obs_ee_pose: end-effector is static (max per-axis std 6.93e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-57-30-184008",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 8.78e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 9.03e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-58-16-801604",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 9.48e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.14e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-09-58-40-010759",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.45e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.03e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-01-30-926957",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.29e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.38e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-01-49-014487",
+      "reason": "left.obs_ee_pose: 100% of frames are missing-data sentinels; right.obs_ee_pose: end-effector is static (max per-axis std 1.08e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-02-46-880680",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 7.04e-06 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.03e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-05-36-655049",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 3.86e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 3.75e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-06-44-464070",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.63e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 2.06e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-10-42-093235",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.36e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 4.23e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-11-41-090551",
+      "reason": "left.obs_ee_pose: 100% of frames are missing-data sentinels; right.obs_ee_pose: end-effector is static (max per-axis std 1.14e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-12-32-390408",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.65e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 2.33e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-12-34-940792",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.44e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.40e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-13-02-898850",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.05e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 9.17e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-13-20-775456",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.67e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 4.40e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-13-58-438951",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.96e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 2.65e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-14-12-354866",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.17e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.51e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-14-27-845489",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.78e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 6.69e-05 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-14-30-264380",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 2.79e-05 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.37e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-15-45-952631",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.99e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 2.40e-04 m); pose stream likely unpopulated"
+    },
+    {
+      "episode_id": "scale__2026-04-30-10-16-26-618905",
+      "reason": "left.obs_ee_pose: end-effector is static (max per-axis std 1.44e-04 m); pose stream likely unpopulated; right.obs_ee_pose: end-effector is static (max per-axis std 1.54e-04 m); pose stream likely unpopulated"
+    }
+  ],
+  "config": {
+    "data_dir": "data",
+    "arm": "auto",
+    "min_length": 30,
+    "normalize": "zscore",
+    "max_length": 200,
+    "length_normalize": true,
+    "sakoe_chiba_radius": null,
+    "linkage": "average",
+    "difficulty_scaling": "rank"
+  },
+  "subset_comparison": {
+    "coreset": {
+      "n": 68.0,
+      "diversity_score": 1.974903535702866,
+      "median_pairwise": 1.97219754441247,
+      "min_pairwise": 1.6508131188732067,
+      "max_pairwise": 2.663543018387299,
+      "mean_nn_distance": 1.7090799381051398,
+      "redundancy_ratio": 0.0,
+      "n_tasks_covered": 12.0,
+      "n_sources_covered": 4.0,
+      "n_clusters_covered": 10.0
+    },
+    "random": {
+      "n": 68.0,
+      "diversity_score": 1.8779104981109709,
+      "median_pairwise": 1.9725291341945306,
+      "min_pairwise": 0.39162137387920015,
+      "max_pairwise": 2.63169368752499,
+      "mean_nn_distance": 1.1464888625645495,
+      "redundancy_ratio": 0.5588235294117647,
+      "n_tasks_covered": 12.0,
+      "n_sources_covered": 4.0,
+      "n_clusters_covered": 7.0
+    },
+    "stratified": {
+      "n": 68.0,
+      "diversity_score": 1.972903412551551,
+      "median_pairwise": 1.9894282786918767,
+      "min_pairwise": 0.0,
+      "max_pairwise": 2.6328707450718554,
+      "mean_nn_distance": 1.468820892288188,
+      "redundancy_ratio": 0.38235294117647056,
+      "n_tasks_covered": 7.0,
+      "n_sources_covered": 3.0,
+      "n_clusters_covered": 10.0
+    },
+    "redundant": {
+      "n": 68.0,
+      "diversity_score": 1.3329902941556222,
+      "median_pairwise": 1.6181588790668522,
+      "min_pairwise": 0.0,
+      "max_pairwise": 2.2540622381481876,
+      "mean_nn_distance": 0.4795854185645694,
+      "redundancy_ratio": 1.0,
+      "n_tasks_covered": 4.0,
+      "n_sources_covered": 2.0,
+      "n_clusters_covered": 2.0
+    }
+  },
+  "subset_comparison_baseline": {
+    "trials": 200.0,
+    "mean": 1.9021672372074232,
+    "std": 0.01941708067096974,
+    "p05": 1.8665673159903209,
+    "p95": 1.931465265565849,
+    "candidate": 1.974903535702866,
+    "candidate_name": "coreset",
+    "percentile": 100.0,
+    "z_score": 3.7459955864626933
+  },
+  "subset_size": 68
+}

@@ -1,0 +1,406 @@
+{
+  "goal_match": {
+    "query": "teach the robot to fold a shirt",
+    "matched_task": "yam_fold_tshirt",
+    "target_index": 94,
+    "score": 0.8925312853252284,
+    "margin": 0.7391345740033775,
+    "is_confident": true,
+    "note": "",
+    "alternates": [
+      {
+        "task_name": "yam_fold_tshirt",
+        "score": 0.8925312853252284,
+        "clip_index": 94,
+        "episode_id": "yam__fold_clothes__2026-07-08-22-09-05-861000",
+        "n_clips": 40
+      },
+      {
+        "task_name": "freeform_hang_shirt_on_hanger_and_place_on_rack",
+        "score": 0.23283055396167868,
+        "clip_index": 83,
+        "episode_id": "scale__2026-04-30-09-44-25-441677",
+        "n_clips": 3
+      },
+      {
+        "task_name": "fold_clothes",
+        "score": 0.19331517401536494,
+        "clip_index": 20,
+        "episode_id": "aria__2025-09-21-21-35-21-000000",
+        "n_clips": 80
+      },
+      {
+        "task_name": "flagship_folding_clothes",
+        "score": 0.06228415793308001,
+        "clip_index": 90,
+        "episode_id": "scale__2026-04-30-10-13-10-897450",
+        "n_clips": 1
+      },
+      {
+        "task_name": "freeform_sort_laundry_by_type_and_color",
+        "score": 0.012853490555583904,
+        "clip_index": 89,
+        "episode_id": "scale__2026-04-30-09-47-51-763599",
+        "n_clips": 7
+      }
+    ]
+  },
+  "path_metrics": {
+    "n_steps": 11.0,
+    "n_unique_clips": 9.0,
+    "spearman": 1.0,
+    "frac_nondecreasing": 1.0,
+    "max_jump": 0.08823529411764708,
+    "max_abs_step": 0.08823529411764708,
+    "mean_abs_step": 0.05514705882352941,
+    "n_large_jumps": 0.0,
+    "task_switch_rate": 0.25,
+    "cluster_switch_rate": 0.125,
+    "embodiment_switch_rate": 0.125,
+    "source_switch_rate": 0.125,
+    "mean_consecutive_dtw": 0.4282290697231066,
+    "max_consecutive_dtw": 0.9044303929988131,
+    "spearman_with_reviews": 0.587180674734059,
+    "frac_nondecreasing_with_reviews": 0.8,
+    "task_switch_rate_with_reviews": 0.6,
+    "cluster_switch_rate_with_reviews": 0.5,
+    "cluster_coverage": 0.4,
+    "task_coverage": 0.6,
+    "n_clips_to_target": 11.0,
+    "distinct_clusters": 2.0,
+    "frac_consecutive_near_duplicate": 0.4,
+    "mean_pairwise_dtw": 1.3444453713975735,
+    "distinct_ratio": 0.8181818181818182
+  },
+  "ordering_comparison": {
+    "Curriculum path": {
+      "n_steps": 11.0,
+      "n_unique_clips": 9.0,
+      "spearman": 1.0,
+      "frac_nondecreasing": 1.0,
+      "max_jump": 0.0882352941,
+      "max_abs_step": 0.0882352941,
+      "mean_abs_step": 0.0551470588,
+      "n_large_jumps": 0.0,
+      "task_switch_rate": 0.25,
+      "cluster_switch_rate": 0.125,
+      "embodiment_switch_rate": 0.125,
+      "source_switch_rate": 0.125,
+      "mean_consecutive_dtw": 0.4282290697,
+      "max_consecutive_dtw": 0.904430393,
+      "spearman_with_reviews": 0.5871806747,
+      "frac_nondecreasing_with_reviews": 0.8,
+      "task_switch_rate_with_reviews": 0.6,
+      "cluster_switch_rate_with_reviews": 0.5,
+      "cluster_coverage": 0.4,
+      "task_coverage": 0.6,
+      "n_clips_to_target": 11.0,
+      "distinct_clusters": 2.0,
+      "frac_consecutive_near_duplicate": 0.4,
+      "mean_pairwise_dtw": 1.3444453714,
+      "distinct_ratio": 0.8181818182
+    },
+    "Random order (same clips)": {
+      "n_steps": 9.0,
+      "n_unique_clips": 9.0,
+      "spearman": 0.0776666667,
+      "frac_nondecreasing": 0.5025,
+      "max_jump": 0.3316911765,
+      "max_abs_step": 0.3813970588,
+      "mean_abs_step": 0.1901746324,
+      "n_large_jumps": 2.52,
+      "task_switch_rate": 0.405,
+      "cluster_switch_rate": 0.2225,
+      "embodiment_switch_rate": 0.3575,
+      "source_switch_rate": 0.3575,
+      "mean_consecutive_dtw": 0.6002871691,
+      "max_consecutive_dtw": 0.9993894166,
+      "spearman_with_reviews": null,
+      "frac_nondecreasing_with_reviews": null,
+      "task_switch_rate_with_reviews": null,
+      "cluster_switch_rate_with_reviews": null,
+      "cluster_coverage": 0.324,
+      "task_coverage": 0.424,
+      "n_clips_to_target": 5.28,
+      "distinct_clusters": 1.62,
+      "frac_consecutive_near_duplicate": 0.255,
+      "mean_pairwise_dtw": 1.3444453714,
+      "distinct_ratio": 1.0
+    },
+    "Random subset (same size)": {
+      "n_steps": 9.0,
+      "n_unique_clips": 9.0,
+      "spearman": 0.005,
+      "frac_nondecreasing": 0.4925,
+      "max_jump": 0.7116176471,
+      "max_abs_step": 0.7718382353,
+      "mean_abs_step": 0.3720220588,
+      "n_large_jumps": 2.84,
+      "task_switch_rate": 0.56,
+      "cluster_switch_rate": 0.51,
+      "embodiment_switch_rate": 0.48,
+      "source_switch_rate": 0.5575,
+      "mean_consecutive_dtw": 0.8218114838,
+      "max_consecutive_dtw": 0.9853990954,
+      "spearman_with_reviews": null,
+      "frac_nondecreasing_with_reviews": null,
+      "task_switch_rate_with_reviews": null,
+      "cluster_switch_rate_with_reviews": null,
+      "cluster_coverage": 0.388,
+      "task_coverage": 0.436,
+      "n_clips_to_target": 5.0,
+      "distinct_clusters": 1.94,
+      "frac_consecutive_near_duplicate": 0.07,
+      "mean_pairwise_dtw": 1.7683209366,
+      "distinct_ratio": 1.0
+    },
+    "Difficulty-sorted (same clips)": {
+      "n_steps": 9.0,
+      "n_unique_clips": 9.0,
+      "spearman": 1.0,
+      "frac_nondecreasing": 1.0,
+      "max_jump": 0.0882352941,
+      "max_abs_step": 0.0882352941,
+      "mean_abs_step": 0.0551470588,
+      "n_large_jumps": 0.0,
+      "task_switch_rate": 0.25,
+      "cluster_switch_rate": 0.125,
+      "embodiment_switch_rate": 0.125,
+      "source_switch_rate": 0.125,
+      "mean_consecutive_dtw": 0.4282290697,
+      "max_consecutive_dtw": 0.904430393,
+      "spearman_with_reviews": null,
+      "frac_nondecreasing_with_reviews": null,
+      "task_switch_rate_with_reviews": null,
+      "cluster_switch_rate_with_reviews": null,
+      "cluster_coverage": 0.4,
+      "task_coverage": 0.6,
+      "n_clips_to_target": 9.0,
+      "distinct_clusters": 2.0,
+      "frac_consecutive_near_duplicate": 0.75,
+      "mean_pairwise_dtw": 1.3444453714,
+      "distinct_ratio": 1.0
+    },
+    "Coreset prefix (same size)": {
+      "n_steps": 9.0,
+      "n_unique_clips": 9.0,
+      "spearman": 0.0333333333,
+      "frac_nondecreasing": 0.5,
+      "max_jump": 0.9632352941,
+      "max_abs_step": 0.9632352941,
+      "mean_abs_step": 0.7573529412,
+      "n_large_jumps": 4.0,
+      "task_switch_rate": 1.0,
+      "cluster_switch_rate": 1.0,
+      "embodiment_switch_rate": 0.125,
+      "source_switch_rate": 1.0,
+      "mean_consecutive_dtw": 0.9796479648,
+      "max_consecutive_dtw": 1.0,
+      "spearman_with_reviews": null,
+      "frac_nondecreasing_with_reviews": null,
+      "task_switch_rate_with_reviews": null,
+      "cluster_switch_rate_with_reviews": null,
+      "cluster_coverage": 1.0,
+      "task_coverage": 1.0,
+      "n_clips_to_target": 9.0,
+      "distinct_clusters": 5.0,
+      "frac_consecutive_near_duplicate": 0.0,
+      "mean_pairwise_dtw": 2.0563738321,
+      "distinct_ratio": 1.0
+    }
+  },
+  "path": {
+    "n_steps": 11,
+    "n_unique_clips": 9,
+    "n_reviews": 2,
+    "search_cost": 9.611110303864434,
+    "cost_terms": {
+      "ramp": 2.4117647058823524,
+      "interference": 5.225832557784853,
+      "redundancy": 1.1735130401972291,
+      "step": 0.7999999999999999
+    },
+    "method": "dijkstra",
+    "episode_ids": [
+      "scale__2026-04-30-09-46-32-799264",
+      "scale__2026-04-30-09-44-12-558682",
+      "yam__fold_clothes__2026-07-09-22-12-27-388000",
+      "yam__fold_clothes__2026-07-09-22-18-13-776000",
+      "scale__2026-04-30-09-46-32-799264",
+      "yam__fold_clothes__2026-07-09-22-23-18-188000",
+      "yam__fold_clothes__2026-07-08-22-22-13-384000",
+      "yam__fold_clothes__2026-07-08-22-07-10-737000",
+      "yam__fold_clothes__2026-07-08-22-05-50-932000",
+      "scale__2026-04-30-09-46-32-799264",
+      "yam__fold_clothes__2026-07-08-22-09-05-861000"
+    ]
+  },
+  "graph": {
+    "n_clips": 131,
+    "n_edges": 1166,
+    "start_pool": 1,
+    "reachability_repairs": 1,
+    "task_scope": [
+      "fold_clothes",
+      "yam_fold_tshirt",
+      "freeform_sort_laundry_by_type_and_color",
+      "freeform_hang_shirt_on_hanger_and_place_on_rack",
+      "flagship_folding_clothes"
+    ]
+  },
+  "config": {
+    "data_dir": "data",
+    "graph": {
+      "k_neighbors": 10,
+      "backslide_tolerance": 0.05,
+      "target_step": 0.05,
+      "w_difficulty": 1.0,
+      "w_interference": 1.0,
+      "step_penalty": 0.1,
+      "backslide_penalty": 2.0,
+      "p_task": 0.5,
+      "p_cluster": 0.3,
+      "p_embodiment": 0.3,
+      "p_source": 0.2,
+      "dtw_quantile": 0.95,
+      "start_quantile": 0.1,
+      "w_redundancy": 1.0,
+      "novelty_quantile": 0.05
+    },
+    "search": {
+      "method": "dijkstra",
+      "review_every": 4,
+      "max_reviews": 12,
+      "target_selection": "hardest",
+      "baseline_seeds": 50
+    }
+  },
+  "multi_goal_sweep": {
+    "scope": "garments",
+    "domain": "garments",
+    "n_clips": 131,
+    "task_names": [
+      "flagship_folding_clothes",
+      "fold_clothes",
+      "freeform_hang_shirt_on_hanger_and_place_on_rack",
+      "freeform_sort_laundry_by_type_and_color",
+      "yam_fold_tshirt"
+    ],
+    "is_scoped": true,
+    "n_goals": 40,
+    "ordering_means": {
+      "spearman": {
+        "Coreset prefix (same size)": -0.13571428571428573,
+        "Curriculum path": 0.9871428571428572,
+        "Difficulty-sorted (same clips)": 1.0,
+        "Random order (same clips)": -0.02394642857142858,
+        "Random subset (same size)": -0.0059226190476190455
+      },
+      "task_switch_rate": {
+        "Coreset prefix (same size)": 1.0,
+        "Curriculum path": 0.3880357142857143,
+        "Difficulty-sorted (same clips)": 0.3880357142857143,
+        "Random order (same clips)": 0.5295089285714286,
+        "Random subset (same size)": 0.5797261904761906
+      },
+      "cluster_switch_rate": {
+        "Coreset prefix (same size)": 1.0,
+        "Curriculum path": 0.3744345238095238,
+        "Difficulty-sorted (same clips)": 0.3744345238095238,
+        "Random order (same clips)": 0.500110119047619,
+        "Random subset (same size)": 0.5076666666666666
+      },
+      "mean_consecutive_dtw": {
+        "Coreset prefix (same size)": 0.976611895727095,
+        "Curriculum path": 0.7023469903313735,
+        "Difficulty-sorted (same clips)": 0.7034215828752015,
+        "Random order (same clips)": 0.7887812384365224,
+        "Random subset (same size)": 0.8709591835222659
+      },
+      "frac_consecutive_near_duplicate": {
+        "Coreset prefix (same size)": 0.0,
+        "Curriculum path": 0.09821428571428571,
+        "Difficulty-sorted (same clips)": 0.16196428571428573,
+        "Random order (same clips)": 0.07991666666666666,
+        "Random subset (same size)": 0.030288690476190476
+      }
+    },
+    "path_vs_difficulty_sorted": {
+      "spearman": {
+        "n_goals": 40.0,
+        "mean_a": 0.9871428571428572,
+        "mean_b": 1.0,
+        "a_better": 3.0,
+        "tied": 37.0,
+        "b_better": 0.0,
+        "p_value": 0.10247043485974941
+      },
+      "task_switch_rate": {
+        "n_goals": 40.0,
+        "mean_a": 0.3880357142857143,
+        "mean_b": 0.3880357142857143,
+        "a_better": 0.0,
+        "tied": 40.0,
+        "b_better": 0.0,
+        "p_value": NaN
+      },
+      "cluster_switch_rate": {
+        "n_goals": 40.0,
+        "mean_a": 0.3744345238095238,
+        "mean_b": 0.3744345238095238,
+        "a_better": 0.0,
+        "tied": 40.0,
+        "b_better": 0.0,
+        "p_value": NaN
+      },
+      "mean_consecutive_dtw": {
+        "n_goals": 40.0,
+        "mean_a": 0.7023469903313735,
+        "mean_b": 0.7034215828752015,
+        "a_better": 3.0,
+        "tied": 37.0,
+        "b_better": 0.0,
+        "p_value": 0.10880943004054569
+      },
+      "frac_consecutive_near_duplicate": {
+        "n_goals": 40.0,
+        "mean_a": 0.0982142857142857,
+        "mean_b": 0.16196428571428573,
+        "a_better": 11.0,
+        "tied": 29.0,
+        "b_better": 0.0,
+        "p_value": 0.0032526419863057334
+      }
+    },
+    "difficulty_ablation_means": {
+      "task_switch_rate": {
+        "composite difficulty": 0.3880357142857143,
+        "duration only": 0.3880357142857143,
+        "path_length only": 0.3880357142857143,
+        "random order": 0.5572916666666667,
+        "tortuosity only": 0.3880357142857143
+      },
+      "cluster_switch_rate": {
+        "composite difficulty": 0.3744345238095238,
+        "duration only": 0.3744345238095238,
+        "path_length only": 0.3744345238095238,
+        "random order": 0.5161607142857143,
+        "tortuosity only": 0.3744345238095238
+      },
+      "mean_consecutive_dtw": {
+        "composite difficulty": 0.7034215828752015,
+        "duration only": 0.7135084036240238,
+        "path_length only": 0.7368043531892472,
+        "random order": 0.8108373711398137,
+        "tortuosity only": 0.7273687294231572
+      },
+      "frac_consecutive_near_duplicate": {
+        "composite difficulty": 0.16196428571428573,
+        "duration only": 0.12898809523809524,
+        "path_length only": 0.09812499999999999,
+        "random order": 0.06449404761904762,
+        "tortuosity only": 0.15071428571428572
+      }
+    }
+  }
+}

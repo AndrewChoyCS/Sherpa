@@ -1,0 +1,198 @@
+/* ==========================================================================
+   Base + shell.
+
+   Spacing discipline: vertical rhythm belongs to ONE selector (.band). Nothing
+   else sets top/bottom margin on a band child. This is the specificity trap that
+   makes hand-written CSS drift, so it is stated rather than assumed.
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--ice);
+  font-family: var(--face-body);
+  font-size: var(--size-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* ---- atmosphere --------------------------------------------------------
+   Two very large, very soft radial washes drifting against each other, plus a
+   grain layer. Fixed to the viewport so the page moves through the sky rather
+   than dragging it along. This is the only ambient motion on the page.       */
+.sky {
+  position: fixed;
+  inset: -20%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(45rem 40rem at 18% 12%, color-mix(in srgb, var(--aurora) 30%, transparent), transparent 62%),
+    radial-gradient(55rem 45rem at 82% 30%, color-mix(in srgb, var(--plume) 24%, transparent), transparent 60%),
+    radial-gradient(40rem 32rem at 70% 78%, color-mix(in srgb, var(--summit) 12%, transparent), transparent 58%);
+  filter: blur(18px) saturate(120%);
+  animation: drift 48s var(--ease-out) infinite alternate;
+}
+
+@keyframes drift {
+  from { transform: translate3d(-2%, -1%, 0) scale(1); }
+  to   { transform: translate3d(3%, 2%, 0) scale(1.08); }
+}
+
+/* Grain. The reference image is grainy, and noise is what stops a large gradient
+   from banding into visible steps on an 8-bit display.
+
+   Deliberately NOT `mix-blend-mode: overlay`, which is the obvious way to do this:
+   a blend layer across the whole viewport promotes everything into a different
+   compositing path and stopped <video> painting at all — the clip thumbnails went
+   black. Plain low-opacity noise under the content breaks the banding just as well
+   and composites normally. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.15;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sky { animation: none; }
+}
+
+/* ---- shell -------------------------------------------------------------- */
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding-inline: var(--pad);
+}
+
+/* One selector owns band rhythm. */
+.band { padding-block: var(--band); }
+.band--tight { padding-block: calc(var(--band) * 0.55); }
+.band--flush { padding-block: 0; }
+
+/* A hairline that fades at both ends — a horizon, not a box edge. */
+.band + .band { border-top: var(--hair) solid transparent; }
+.rule {
+  height: var(--hair);
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg, transparent, var(--edge) 15%, var(--edge) 85%, transparent);
+}
+
+.stack { display: grid; gap: 1.5rem; }
+.stack--tight { display: grid; gap: 0.625rem; }
+.stack--wide { display: grid; gap: 2.5rem; }
+
+/* ---- surfaces ----------------------------------------------------------- */
+.panel {
+  background: var(--lift);
+  border: var(--hair) solid var(--edge);
+  border-radius: var(--round);
+  padding: clamp(1.125rem, 2.2vw, 1.75rem);
+}
+
+/* ---- controls ----------------------------------------------------------- */
+.field { display: grid; gap: 0.4rem; }
+.field label {
+  font-family: var(--face-mono);
+  font-size: var(--size-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--haze);
+}
+.field input[type='range'] { accent-color: var(--summit); width: 100%; }
+.field select,
+.field input[type='text'],
+.field input[type='number'] {
+  font-family: var(--face-mono);
+  font-size: var(--size-data);
+  color: var(--ice);
+  background: color-mix(in srgb, var(--void) 60%, var(--basalt));
+  border: var(--hair) solid var(--edge);
+  border-radius: var(--round);
+  padding: 0.5rem 0.6rem;
+}
+
+.btn {
+  font-family: var(--face-mono);
+  font-size: var(--size-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--void);
+  background: var(--ice);
+  border: var(--hair) solid transparent;
+  border-radius: var(--round);
+  padding: 0.7rem 1.1rem;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+.btn:hover { background: var(--summit); }
+.btn:disabled, .btn[aria-disabled='true'] { opacity: 0.35; cursor: default; }
+.btn:disabled:hover { background: var(--ice); }
+
+.btn--ghost {
+  color: var(--ice);
+  background: transparent;
+  border-color: var(--edge);
+}
+.btn--ghost:hover { color: var(--void); background: var(--summit); border-color: var(--summit); }
+
+/* ---- data tables -------------------------------------------------------- */
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--face-mono);
+  font-size: var(--size-data);
+  font-variant-numeric: tabular-nums;
+}
+.ledger th {
+  text-align: left;
+  font-weight: 500;
+  font-size: var(--size-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--haze);
+  border-bottom: var(--hair) solid var(--edge);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  white-space: nowrap;
+}
+.ledger td {
+  border-bottom: var(--hair) solid var(--edge-soft);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  vertical-align: top;
+  color: var(--ice-70);
+}
+.ledger td:last-child, .ledger th:last-child { padding-right: 0; }
+.ledger .num { text-align: right; }
+.ledger tr[data-review='true'] td { color: var(--summit); }
+.ledger tr[data-primary='true'] td { color: var(--ice); }
+.ledger td[data-best='true'] { color: var(--summit); font-weight: 600; }
+
+/* ---- quality floor ------------------------------------------------------ */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--summit);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
