@@ -61,6 +61,16 @@ CACHE_ROOT = "/cache"
 EPISODES_DIR = f"{DATA_ROOT}/episodes"
 REPORTS_DIR = f"{DATA_ROOT}/reports"
 
+# The episode set the deployed web app serves. Kept separate from EPISODES_DIR, which
+# `fetch` overwrites: the browser's first paint comes from a `snapshot.json` exported
+# against one specific dataset, so the live API has to read that same set or the static
+# page and the interactive controls quietly disagree about the numbers.
+WEB_EPISODES_DIR = f"{DATA_ROOT}/episodes_web"
+# Matching DTW/dataset caches. Separate from the batch cache at CACHE_ROOT for the same
+# reason: these are keyed by a content hash of WEB_EPISODES_DIR's trajectories, so mixing
+# them with another episode set's entries just produces misses.
+WEB_CACHE_DIR = f"{CACHE_ROOT}/.cache"
+
 data_volume = modal.Volume.from_name("egoverse-data", create_if_missing=True)
 cache_volume = modal.Volume.from_name("egoverse-cache", create_if_missing=True)
 r2_secret = modal.Secret.from_name("egoverse-r2")
@@ -75,6 +85,11 @@ image = (
     .add_local_dir("scripts", "/root/scripts")
     .add_local_file("run_pipeline.py", "/root/run_pipeline.py")
     .add_local_file("find_path.py", "/root/find_path.py")
+    # The web surface. `server/api.py` imports DOMAIN_PRESETS from find_path and reads
+    # its defaults out of run_pipeline's signature, so both files above are load-bearing
+    # here even though nothing runs them as CLIs.
+    .add_local_dir("server", "/root/server")
+    .add_local_dir("web/dist", "/root/web/dist")
 )
 
 app = modal.App(APP_NAME)
@@ -389,6 +404,47 @@ def volume_status() -> Dict[str, object]:
     caches = sorted(p.name for p in Path(CACHE_ROOT).glob("dtw_*.npy")) if Path(CACHE_ROOT).exists() else []
     return {"n_episodes": len(episodes), "by_source": by_source,
             "reports": reports, "dtw_caches": caches}
+
+
+# --------------------------------------------------------------------------- #
+# the deployed web app
+# --------------------------------------------------------------------------- #
+@app.function(
+    image=image,
+    volumes={DATA_ROOT: data_volume, CACHE_ROOT: cache_volume},
+    cpu=4.0,
+    memory=8192,
+    scaledown_window=600,
+)
+@modal.concurrent(max_inputs=8)
+@modal.asgi_app()
+def web():
+    """Serve Sherpa -- the React frontend and the JSON API -- as one ASGI app.
+
+    ``server/api.py`` already mounts ``web/dist`` at ``/`` when the directory exists, so
+    a single process covers both surfaces and the frontend's relative ``/api`` calls are
+    same-origin. Nothing here adds behaviour; it only points the pipeline at the volumes.
+    """
+    sys.path.insert(0, "/root")
+    os.chdir("/root")
+
+    # `run_pipeline`'s defaults are the *relative* strings "data" and ".cache"
+    # (src/pipeline.py), and `cache_dir` is not in the API's TUNABLE list, so a request
+    # cannot redirect it. Symlinking the volumes onto those two names means the deployed
+    # app and the local CLI run byte-identical code paths rather than a forked config.
+    for link, target in ((Path("/root/data"), WEB_EPISODES_DIR),
+                         (Path("/root/.cache"), WEB_CACHE_DIR)):
+        if not link.exists():
+            link.symlink_to(target)
+
+    # The API calls run_pipeline without n_jobs, so it inherits n_jobs=-1, which joblib
+    # resolves through os.cpu_count() -- the *host's* cores, not the cgroup's. Same
+    # oversubscription trap the batch functions avoid with _allocated_cpus().
+    os.environ["LOKY_MAX_CPU_COUNT"] = str(_allocated_cpus(4))
+
+    from server.api import app as api
+
+    return api
 
 
 # --------------------------------------------------------------------------- #

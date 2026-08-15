@@ -24,6 +24,9 @@ episodes that carry a label — evidence the distance metric tracks behaviour ra
 noise. (78 episodes, all of `mecka`, carry no `task_name` at all and are excluded rather
 than scored against a placeholder; see *Known limitations*.)
 
+**Live:** <https://andrewchoy--egoverse-curriculum-web.modal.run> — Sherpa, running the
+real pipeline on the real episodes. See *Deploying* for how it is hosted.
+
 ---
 
 ## The 60-second demo
@@ -414,6 +417,37 @@ the agreement headline is derived from the measured ARI, so a degenerate cluster
 one, and `tail_ratio > 2` raises an explicit warning that the matrix is outlier-dominated. The
 hero plots the most mutually distinct episodes by coreset rank and states how many were held
 back, rather than silently truncating.
+
+---
+
+## Deploying
+
+Live at <https://andrewchoy--egoverse-curriculum-web.modal.run>, as a single Modal ASGI
+app — `modal_app.py::web` returns the FastAPI app unchanged, and `server/api.py` already
+mounts `web/dist` at `/`, so one container serves the SPA and the API on one origin and
+the frontend's relative `/api` calls need no configuration.
+
+```bash
+python scripts/export_snapshot.py     # refresh the first-paint snapshot
+cd web && npm run build && cd ..      # web/dist is uploaded at deploy time
+modal deploy modal_app.py
+```
+
+**The data lives on the volumes, not in the image or in git.** `episodes_web/` on
+`egoverse-data` holds the exact 333 stores this README's numbers come from, and the
+matching DTW/dataset caches sit on `egoverse-cache`. The container symlinks `/root/data`
+and `/root/.cache` onto them, so `run_pipeline`'s own relative defaults resolve to the
+volumes and the deployed app runs byte-identical code to the CLI. Those two directories
+are deliberately kept apart from the `episodes/` set that `::fetch` overwrites: the
+browser first-paints from a `snapshot.json` exported against one specific dataset, and a
+live API reading a *different* set would quietly disagree with the static page.
+
+Nothing here needs credentials — the R2 secret is only for the offline fetch path.
+
+**Cold start is ~95 s**, then ~0.5 s warm. The page itself is unaffected: it first-paints
+entirely from the bundled `snapshot.json` with no server call, so only the interactive
+controls wait on a sleeping container. Set `min_containers=1` on the `web` function to
+keep one alive if that matters.
 
 ---
 
