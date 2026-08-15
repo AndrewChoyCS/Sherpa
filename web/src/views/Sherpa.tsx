@@ -20,6 +20,9 @@ import { WorkedExamples, WORKED_EXAMPLES } from '../viz/WorkedExamples'
 import { rankingVerdict, SubsetCompare } from '../viz/SubsetCompare'
 import { DifficultyAblation } from '../viz/DifficultyAblation'
 import { HowThePathIsFound } from '../viz/HowThePathIsFound'
+import { TrainingCurves, trainingVerdict } from '../viz/TrainingCurves'
+import type { TrainingCurvesPayload } from '../viz/TrainingCurves'
+import { loadTraining } from '../lib/training'
 import type { AblationPayload } from '../viz/DifficultyAblation'
 import { loadAblation } from '../lib/ablation'
 import type { WorkedExample } from '../viz/WorkedExamples'
@@ -63,6 +66,7 @@ export function Sherpa({ snapshot, onOpenWorkbench }: SherpaProps) {
   const [domains, setDomains] = useState<Record<string, DomainInfo> | null>(null)
   const [clips, setClips] = useState<ClipManifest>({})
   const [ablation, setAblation] = useState<AblationPayload | null>(null)
+  const [training, setTraining] = useState<TrainingCurvesPayload | null>(null)
   const [previews, setPreviews] = useState<Record<string, PathPayload>>({})
   const [activeExample, setActiveExample] = useState<string | null>(null)
   // Which scope the *displayed* route was searched under. The baseline claim below
@@ -172,6 +176,10 @@ export function Sherpa({ snapshot, onOpenWorkbench }: SherpaProps) {
   // web/public/.
   useEffect(() => {
     loadAblation().then(setAblation)
+  }, [])
+
+  useEffect(() => {
+    loadTraining().then(setTraining)
   }, [])
 
   useEffect(() => {
@@ -602,6 +610,28 @@ export function Sherpa({ snapshot, onOpenWorkbench }: SherpaProps) {
           </p>
         </div>
       </section>
+
+      {/* ================= did it actually help? =================
+          Placed last on purpose. Every section above scores an ordering with a
+          proxy; this is the only one that trains a model, so it belongs after the
+          things it stands in for rather than in front of them. */}
+      {training && (
+        <section className="band" aria-labelledby="train-title">
+          <div className="shell stack">
+            <p className="label">{trainingVerdict(training).eyebrow}</p>
+            <h2 className="display" id="train-title">
+              {trainingVerdict(training).heading}
+            </h2>
+            <p className="prose">
+              Everything above scores an <em>ordering</em>. None of it shows a model learning.
+              So the same behaviour-cloning policy was trained {training.n_runs} times on
+              identical data — three orderings, eight seeds each, paired by seed — changing
+              nothing but the order the episodes arrive in.
+            </p>
+            <TrainingCurves payload={training} />
+          </div>
+        </section>
+      )}
 
       <footer className="foot">
         <div className="shell foot__inner">

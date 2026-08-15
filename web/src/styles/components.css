@@ -675,3 +675,46 @@
   .maths__num { text-align: left; font-size: 1.5rem; }
   .weights__note { display: none; }
 }
+
+/* ---- training curves ----------------------------------------------------
+   Component authored in the other session. Its palette already matches (summit
+   gold / the control red / neutral), so only layout is needed here. */
+.curves-block { display: grid; gap: 1.25rem; }
+
+.curves__legend {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: var(--hair) solid var(--edge);
+}
+.curves__key { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; }
+.curves__key i { width: 14px; height: 3px; border-radius: 2px; display: block; }
+.curves__key b { color: var(--ice); font-weight: 400; }
+
+.curves { width: 100%; }
+.curves svg { width: 100%; height: auto; display: block; overflow: visible; }
+.curves__tick { font-family: var(--face-mono); font-size: 10px; fill: var(--haze); }
+
+/* Four readouts, with the reverse-ordering gap given the most weight — it is the
+   claim that survives, where the speed-up claim does not. */
+.curves__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1.25rem 2rem;
+  padding: 1.25rem 0;
+  border-block: var(--hair) solid var(--edge);
+}
+.curves__stat { display: grid; gap: 0.35rem; align-content: start; }
+.curves__stat b {
+  font-family: var(--face-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--ice);
+}
+.curves__stat--hero b {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 200;
+  color: var(--summit);
+}
+.curves__note { font-size: 0.8125rem; color: var(--haze); line-height: 1.45; }
